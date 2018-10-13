@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">FollowMeApp</string>
+    <string name="call_forwarding">Call Forwarding:</string>
+    <string name="on">on</string>
+    <string name="off">off</string>
+</resources>
