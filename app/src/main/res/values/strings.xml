@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">FollowMeApp</string>
-    <string name="call_forwarding">Call Forwarding:</string>
-    <string name="on">on</string>
-    <string name="off">off</string>
+    <string name="set_call_forwarding_on_off">Set Call Forwarding ON/OFF</string>
 </resources>

@@ -24,7 +24,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
             // Get the layout for the App Widget and attach an on-click listener
             // to the button
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_on);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
             views.setOnClickPendingIntent(R.id.on_off_switch, pendingIntent);
 
 

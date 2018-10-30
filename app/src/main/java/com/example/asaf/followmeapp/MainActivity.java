@@ -2,8 +2,6 @@ package com.example.asaf.followmeapp;
 
 import android.Manifest;
 import android.app.Activity;
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -47,17 +45,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (this.getSavedPhoneNumber() != null)
             savedPhoneNum = this.getSavedPhoneNumber();
 
-        this.initiateViews();
         if (this.isFromWidget())
+        {
             handleWidgetAction();
+            this.finish();
+        }
+        this.initiateViews();
     }
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        if (this.isFromWidget())
-//            handleWidgetAction();
-//    }
 
     private void initiateViews() {
         this.phoneNumEditText = findViewById(R.id.numet);
@@ -100,10 +94,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ret = stringBuilder.toString();
             }
         } catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
+            Log.e("Get Saved Phonne number", "File not found: " + e.toString());
             return null;
         } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
+            Log.e("Get Saved Phonne number", "Can not read file: " + e.toString());
             return null;
         }
 
@@ -124,19 +118,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
-    }
-
-    private void changeWidgetStatus(String status) {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-//        int widgetId = appWidgetManager.getAppWidgetIds(new ComponentName(this, "MainActivity"))[0];
-//        int layoutId;
-//        if (status.equals(this.ENABLE))
-//            layoutId = R.layout.widget_on;
-//        else
-//            layoutId = R.layout.widget_off;
-//
-//        RemoteViews views = new RemoteViews(this.getPackageName(), layoutId);
-//        appWidgetManager.updateAppWidget(widgetId, views);
     }
 
     @Override
@@ -179,18 +160,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     callIntent.setData(Uri.parse("tel:" + "*21*" + MainActivity.savedPhoneNum + "%23")); //tel:(format for dialing), *21* (format for call forwarding)
                     context.startActivity(callIntent);                                                   //%23 in URI, equals "#" mark, that is also a part of the call forwarding format.
                     this.setCallForwardStatus(this, this.ENABLE);
-                    if (this.isFromWidget())
-                        this.changeWidgetStatus(ENABLE);
                     break;
-
                 }
                 case DISABLE:
                 {
                     callIntent.setData(Uri.parse("tel:" + "%2321%23")); //tel:(format for dialing),//%23 in URI, equals "#" mark, that is also a part of the call forwarding format.
                     context.startActivity(callIntent);
                     this.setCallForwardStatus(this, this.DISABLE);
-                    if(this.isFromWidget())
-                        this.changeWidgetStatus(DISABLE);
                     break;
                 }
             }
@@ -238,10 +214,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         } catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
+            Log.e("Is forwarding active", "File not found: " + e.toString());
             return true;// True so if there is a problem forwarding will be disabled for sure.
         } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
+            Log.e("Is forwarding active", "Can not read file: " + e.toString());
             return true;// True so if there is a problem forwarding will be disabled for sure.
         }
 
