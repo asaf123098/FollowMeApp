@@ -9,6 +9,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,17 +19,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener
 {
@@ -40,9 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView disablePatternPreView;
     private Button saveButton;
     private Button enableButton;
-    private Button disaleButton;
-
-    private static String savedPhoneNum;
+    private Button disableButton;
 
     private final String ENABLE = "enable";
     private final String DISABLE = "disable";
@@ -73,8 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.enableButton = findViewById(R.id.enable);
         this.enableButton.setOnClickListener(this);
 
-        this.disaleButton = findViewById(R.id.disable);
-        this.disaleButton.setOnClickListener(this);
+        this.disableButton = findViewById(R.id.disable);
+        this.disableButton.setOnClickListener(this);
     }
 
     private void initEditTexts() {
@@ -157,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             this.saveDisablePattern();
         } else if (view.getId() == this.enableButton.getId()) {
             this.setCallForwarding(ENABLE, this);
-        } else if (view.getId() == this.disaleButton.getId()) {
+        } else if (view.getId() == this.disableButton.getId()) {
             this.setCallForwarding(DISABLE, this);
         }
     }
