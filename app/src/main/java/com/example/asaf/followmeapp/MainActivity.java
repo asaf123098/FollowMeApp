@@ -2,34 +2,43 @@ package com.example.asaf.followmeapp;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
+public class MainActivity extends AppCompatActivity implements View.OnClickListener
+{
     private EditText phoneNumEditText;
-    private TextView currentPhoneNumTextView;
-    private Button enterButton;
+    private EditText turnOnStartPatternEditText;
+    private EditText turnOnEndPatternEditText;
+    private EditText turnOffPatternEditText;
+
+    private TextView phoneNumberPreView;
+    private TextView enablePatternPreView;
+    private TextView disablePatternPreView;
+    private Button saveButton;
     private Button enableButton;
     private Button disaleButton;
 
@@ -38,12 +47,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final String ENABLE = "enable";
     private final String DISABLE = "disable";
 
+    private SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (this.getSavedPhoneNumber() != null)
-            savedPhoneNum = this.getSavedPhoneNumber();
+        this.sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         if (this.isFromWidget())
         {
@@ -54,17 +64,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initiateViews() {
-        this.phoneNumEditText = findViewById(R.id.numet);
+        this.initEditTexts();
+        this.initPreViews();
 
-        this.currentPhoneNumTextView = findViewById(R.id.currentNum);
-        if (savedPhoneNum != null)
-            this.currentPhoneNumTextView.setText(savedPhoneNum);//Set the current phone num in memory if exists
-        else {
-            this.currentPhoneNumTextView.setText("No phone number in memory");
-        }
-
-        this.enterButton = findViewById(R.id.enter);
-        this.enterButton.setOnClickListener(this);
+        this.saveButton = findViewById(R.id.save_button);
+        this.saveButton.setOnClickListener(this);
 
         this.enableButton = findViewById(R.id.enable);
         this.enableButton.setOnClickListener(this);
@@ -73,57 +77,84 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.disaleButton.setOnClickListener(this);
     }
 
-    private String getSavedPhoneNumber() {
-
-        String ret = "";
-
-        try {
-            InputStream inputStream = this.openFileInput("number.txt");
-
-            if (inputStream != null) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ((receiveString = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(receiveString);
-                }
-
-                inputStream.close();
-                ret = stringBuilder.toString();
-            }
-        } catch (FileNotFoundException e) {
-            Log.e("Get Saved Phonne number", "File not found: " + e.toString());
-            return null;
-        } catch (IOException e) {
-            Log.e("Get Saved Phonne number", "Can not read file: " + e.toString());
-            return null;
-        }
-
-        return ret;
+    private void initEditTexts() {
+        this.phoneNumEditText = findViewById(R.id.phone_number_edit_text);
+        this.turnOnStartPatternEditText = findViewById(R.id.turn_on_start_pattern_edit_text);
+        this.turnOnEndPatternEditText = findViewById(R.id.turn_on_end_pattern_edit_text);
+        this.turnOffPatternEditText = findViewById(R.id.turn_off_pattern_edit_text);
     }
 
-    private void saveEnteredNumToMemory() {
-        writeToFile(this.phoneNumEditText.getText().toString(), this);
-        savedPhoneNum = getSavedPhoneNumber();
-        this.currentPhoneNumTextView.setText(savedPhoneNum);//Update the text view with the current phone num.
+    private void initPreViews() {
+        this.phoneNumberPreView = findViewById(R.id.saved_number_preview);
+        this.phoneNumberPreView.setText(this.getPhoneNumber());
+
+        this.enablePatternPreView = findViewById(R.id.enable_pattern_preview);
+        this.enablePatternPreView.setText(this.getEnablePattern());
+
+        this.disablePatternPreView = findViewById(R.id.disable_pattern_preview);
+        this.disablePatternPreView.setText(this.getPhoneNumber());
     }
 
-    private void writeToFile(String data, Context context) {
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("number.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
+    private void saveEnablePattern()
+    {
+        String start = this.turnOnStartPatternEditText.getText().toString();
+        String end = this.turnOnEndPatternEditText.getText().toString();
+        SharedPreferences.Editor sharedPrefEditor = this.sharedPref.edit();
+        sharedPrefEditor.putString(getString(R.string.turn_on_start_key), start);
+        sharedPrefEditor.putString(getString(R.string.turn_on_end_key), end);
+        sharedPrefEditor.commit();
+        this.enablePatternPreView.setText(getEnablePattern());//Update the text view with the current phone num.
+    }
+
+    private String getEnablePattern()
+    {
+        String start = this.sharedPref.getString(getString(R.string.turn_on_start_key), "");
+        String end = this.sharedPref.getString(getString(R.string.turn_on_end_key), "");
+        String phoneNumber = this.getPhoneNumber();
+
+        return start + phoneNumber + end;
+    }
+
+    private void saveDisablePattern()
+    {
+        String disableStr = this.turnOffPatternEditText.getText().toString();
+        SharedPreferences.Editor sharedPrefEditor = this.sharedPref.edit();
+        sharedPrefEditor.putString(getString(R.string.turn_off_key), disableStr);
+        sharedPrefEditor.commit();
+        this.disablePatternPreView.setText(this.getDisablePattern());//Update the text view with the current phone num.
+    }
+
+    private String getDisablePattern()
+    {
+        return this.sharedPref.getString(getString(R.string.turn_off_key), "");
+    }
+
+    private void savePhoneNumber() {
+        SharedPreferences.Editor sharedPrefEditor = this.sharedPref.edit();
+        sharedPrefEditor.putString(getString(R.string.phone_number_key), this.phoneNumEditText.getText().toString());
+        sharedPrefEditor.commit();
+        this.phoneNumberPreView.setText(getPhoneNumber());//Update the text view with the current phone num.
+    }
+
+    private String getPhoneNumber() {
+        return this.sharedPref.getString(getString(R.string.phone_number_key), getString(R.string.couldnt_find_value));
+    }
+
+    private void raiseAlert(String alertMessage)
+    {
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        alertDialog.setTitle("Error");
+        alertDialog.setMessage(alertMessage);
+        alertDialog.setCancelable(true);
+        alertDialog.show();
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == this.enterButton.getId()) {
-            this.saveEnteredNumToMemory();
+        if (view.getId() == this.saveButton.getId()) {
+            this.savePhoneNumber();
+            this.saveEnablePattern();
+            this.saveDisablePattern();
         } else if (view.getId() == this.enableButton.getId()) {
             this.setCallForwarding(ENABLE, this);
         } else if (view.getId() == this.disaleButton.getId()) {
@@ -157,14 +188,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             {
                 case ENABLE:
                 {
-                    callIntent.setData(Uri.parse("tel:" + "*21*" + MainActivity.savedPhoneNum + "%23")); //tel:(format for dialing), *21* (format for call forwarding)
-                    context.startActivity(callIntent);                                                   //%23 in URI, equals "#" mark, that is also a part of the call forwarding format.
+                    callIntent.setData(Uri.parse("tel:" + this.fix_hashtags_if_needed(this.getEnablePattern())));
+                    context.startActivity(callIntent);
                     this.setCallForwardStatus(this, this.ENABLE);
                     break;
                 }
                 case DISABLE:
                 {
-                    callIntent.setData(Uri.parse("tel:" + "%2321%23")); //tel:(format for dialing),//%23 in URI, equals "#" mark, that is also a part of the call forwarding format.
+                    callIntent.setData(Uri.parse("tel:" + this.fix_hashtags_if_needed(this.getDisablePattern())));
                     context.startActivity(callIntent);
                     this.setCallForwardStatus(this, this.DISABLE);
                     break;
@@ -176,6 +207,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ActivityCompat.requestPermissions((Activity)context, new String [] {Manifest.permission.CALL_PHONE}, 1);
             Toast.makeText(context, String.format("Click %s again", enableOrDisable), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private String fix_hashtags_if_needed(String strToFix)
+    {
+        return strToFix.replaceAll("#", Uri.encode("#"));
     }
 
     private void setCallForwardStatus(Context context, String data)
