@@ -4,13 +4,6 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <LinearLayout
-        android:id="@+id/settings_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -101,7 +94,7 @@
                     android:id="@+id/saved_number_preview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -120,7 +113,7 @@
                     android:id="@+id/enable_pattern_preview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -139,7 +132,7 @@
                     android:id="@+id/disable_pattern_preview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -169,9 +162,8 @@
                     android:text="@string/disable"
                     android:textAllCaps="false"
                     android:textColor="@color/red"
-                    android:textSize="30sp" />
+                    android:textSize="30sp"
+                    style="@style/Widget.AppCompat.ButtonBar"/>
             </LinearLayout>
-
         </LinearLayout>
-    </LinearLayout>
 </ScrollView>

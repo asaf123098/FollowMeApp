@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="50dp"
-    android:layout_width="180dp"
-    android:padding="2dp"
-    android:orientation="horizontal">
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
     <Button
         android:layout_width="wrap_content"
@@ -13,8 +11,8 @@
         android:text="@string/set_call_forwarding_on_off"
         android:id="@+id/on_off_switch"
         android:textColor="@color/white"
-        android:background="@color/darkGrey"
+        android:background="@drawable/widget_button"
         android:textSize="15sp"
         android:padding="3dp"
-        android:gravity="center"/>
-</LinearLayout>
+        android:layout_centerInParent="true"/>
+</RelativeLayout>

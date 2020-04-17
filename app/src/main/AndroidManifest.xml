@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.asaf.followmeapp">
+    package="com.example.followmeapp">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,17 +21,16 @@
             </intent-filter>
         </activity>
 
-         <receiver android:name=".WidgetProvider">
-         <intent-filter>
-         <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-         </intent-filter>
+        <receiver android:name=".WidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
 
 
-         <meta-data
-         android:name="android.appwidget.provider"
-         android:resource="@xml/example_appwidget_info" />
-         </receiver>
-        <activity android:name=".callBroadcastReciever"></activity>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/example_appwidget_info" />
+        </receiver>
     </application>
 
 </manifest>
