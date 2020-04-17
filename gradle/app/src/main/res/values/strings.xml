@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">FollowMeApp</string>
+    <string name="set_call_forwarding_on_off">Set Call Forwarding ON/OFF</string>
+    <string name="phone_number">Phone number</string>
+    <string name="save">Save</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+    <string name="start_pattern">Start Pattern</string>
+    <string name="end_pattern">End Pattern</string>
+    <string name="pattern">Pattern</string>
+    <string name="activation_pattern">Activation pattern:</string>
+    <string name="saved_number">Saved Number:</string>
+    <string name="enable_pattern">Enable Pattern:</string>
+    <string name="disable_pattern">Disable pattern:</string>
+    <string name="couldnt_find_value">Couldn\'t find saved value</string>
+    <string name="preference_file_key">com.example.asaf.followmeapp.PREFRENCES_FILE_KEY</string>
+    <string name="phone_number_key">phone_number</string>
+    <string name="turn_on_start_key">turn_on_start</string>
+    <string name="turn_on_end_key">turn_on_end</string>
+    <string name="turn_off_key">turn_off_end</string>
+</resources>
